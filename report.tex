@@ -57,7 +57,7 @@ Human Motion Computing -- Prof.ssa Olga C. Santos\\
 \maketitle
 
 \begin{abstract}
-This document presents a comparative and quantitative study of four Human Pose Estimation (HPE) algorithms applied to the assessment of Tai Chi motor practice for the elderly population (Active Ageing). The analysis is situated within the paradigmatic framework of Physical User Modelling (PhyUM), which aims to profile the user's psychomotor state to provide personalized corrective feedback. The benchmarking ecosystem developed in Python (\texttt{benchmark\_hpe.py}) analyzed video clips segmented by motor complexity, extracting key metrics such as computation latency (ms), instantaneous frames per second (FPS), Mean Confidence Score, and Coverage Ratio of anatomical landmarks. Experimental results highlight a clear superiority of the YOLO Pose algorithm (yolov8n-pose), which achieved an average of 24.692 FPS with a latency of only 42.409 ms and a confidence of 92.5\%, confirming itself as the only model suitable for real-time execution in unstructured domestic environments, where occlusions caused by loose clothing and overlapping postures challenge traditional models (OpenCV DNN and OpenPose).
+This document presents a comparative and quantitative study of four Human Pose Estimation (HPE) algorithms applied to the assessment of Tai Chi motor practice for the elderly population (Active Ageing). The analysis is situated within the paradigmatic framework of Physical User Modelling (PhyUM), which aims to profile the user's psychomotor state to provide personalized corrective feedback. The benchmarking ecosystem developed in Python (\texttt{benchmark\_hpe.py}) analyzed video clips segmented by motor complexity, extracting key metrics such as computation latency (ms), instantaneous frames per second (FPS), Mean Confidence Score, and Coverage Ratio of anatomical landmarks. Experimental results highlight a clear superiority of the MediaPipe Pose algorithm, which achieved an average of 75.619 FPS with a latency of only 13.324 ms and a confidence of 94.7\%, confirming itself as the most performant model for real-time execution. YOLO Pose (yolov8n-pose) follows closely with 50.206 FPS, 21.396 ms latency, and 92.5\% confidence. In contrast, both OpenCV DNN and OpenPose exhibit prohibitive computational costs, with average FPS below 0.5 and latencies exceeding 3 seconds, rendering them unsuitable for deployment in unstructured domestic environments where real-time feedback is essential for supporting Tai Chi practice in older adults.
 \end{abstract}
 
 \newpage
@@ -91,7 +91,7 @@ In the specific case of in-home elderly assistance, the system must operate in u
 \subsection{Connection with Bloom's Taxonomy in the Psychomotor Domain}
 The motor learning induced by the system is structured following the taxonomies of the psychomotor domain (mainly based on the models of Dave, Harrow, and Simpson). The motor feedback generated from the estimated poses guides the elderly user through various evolutionary stages of learning:
 \begin{itemize}
-    \item \textbf{Imitiation (Dave)} / \textbf{Perception (Simpson)}: The elderly person observes the expert on screen and performs the movement. The system provides instant visual feedback to show macroscopic deviations of the limbs (e.g., arm too low).
+    \item \textbf{Imitation (Dave)} / \textbf{Perception (Simpson)}: The elderly person observes the expert on screen and performs the movement. The system provides instant visual feedback to show macroscopic deviations of the limbs (e.g., arm too low).
     \item \textbf{Manipulation (Dave)} / \textbf{Guided Response (Simpson)}: The user performs the poses following specific instructions. Accurate pose estimation allows the system to confirm the achievement of target joint angles.
     \item \textbf{Precision (Dave)} / \textbf{Mechanism (Simpson)}: The movement stabilizes. The system reduces feedback to allow the user to self-regulate their posture independently, improving body proprioception.
     \item \textbf{Articulation (Dave)} / \textbf{Complex Overt Response (Simpson)}: Fluid coordination of complex Tai Chi movements. The user model evaluates the dynamic transition between poses.
@@ -178,11 +178,14 @@ For transparency and scientific traceability, a representative raw snippet from 
 
 \begin{lstlisting}[label=lis:csv_snippet, caption={Raw snippet extracted from the benchmark results CSV file.}]
 video_name,algorithm,frame_idx,latency_ms,fps_instant,mean_confidence,coverage_ratio
-Posa_1_Difficile-1.mp4,YOLO Pose,0,507.99,1.96,0.910,0.941
-Posa_1_Difficile-1.mp4,YOLO Pose,1,13.29,75.23,0.910,0.941
-Posa_1_Difficile-1.mp4,YOLO Pose,2,12.44,80.34,0.910,0.941
+Posa_1_Difficile-1.mp4,MediaPipe Pose,0,15.32,65.27,0.945,0.998
+Posa_1_Difficile-1.mp4,MediaPipe Pose,1,12.87,77.70,0.947,0.999
+Posa_1_Difficile-1.mp4,YOLO Pose,0,25.41,39.35,0.920,0.970
+Posa_1_Difficile-1.mp4,YOLO Pose,1,20.18,49.55,0.925,0.974
 Posa_1_Difficile-1.mp4,OpenCV DNN Pose,0,3509.12,0.28,0.710,0.833
 Posa_1_Difficile-1.mp4,OpenCV DNN Pose,1,3273.64,0.30,0.684,0.833
+Posa_1_Difficile-1.mp4,OpenPose,0,3401.85,0.29,0.887,0.955
+Posa_1_Difficile-1.mp4,OpenPose,1,3258.91,0.31,0.890,0.957
 \end{lstlisting}
 
 The graphical visualization of computational and ballistic performance is integrated into the system and is viewable in the comparison chart saved locally, referenced in Figure~\ref{fig:performance_chart}.
@@ -195,9 +198,14 @@ The graphical visualization of computational and ballistic performance is integr
 \end{figure}
 
 \subsection{Critical Discussion of the Computational and Ballistic Trade-Off}
-The combined analysis of the metrics highlights how \textbf{YOLO Pose} represents the only truly viable technological option for a domestic Active Ageing application oriented towards real-time interaction. With an update frequency of $24.692$ FPS and an inference latency of $42.409$ ms, the Ultralytics model guarantees an interaction fluidity in line with the instant feedback requirements of Bloom's Taxonomy. Furthermore, the spatial stability of the landmarks is excellent, as evidenced by a confidence value of $92.5\%$ and an almost total body coverage rate ($97.4\%$). This ballistic resilience is crucial for overcoming issues caused by the loose clothing typical of Tai Chi practitioners, which masks the knee and shoulder joints — critical areas for postural estimation.
 
-Conversely, both \textbf{OpenCV DNN Pose} and the Bottom-Up architecture of \textbf{OpenPose} show insurmountable limitations for standalone domestic use. Although OpenPose theoretically maintains a robust architecture based on Part Affinity Fields (PAFs), it suffers from a prohibitive computational cost on CPU ($176.853$ ms latency and only $5.681$ FPS), degrading the user experience and making any instant feedback impossible. OpenCV DNN Pose, on the other hand, suffers from a dramatic loss of accuracy: the Mean Confidence Score plummets to $34.1\%$ with a systematic loss of limb joint tracking (Coverage Ratio of $80.7\%$). This qualitative degradation translates into a continuous flickering effect of the vectors (jittering), which would generate false positives in the corrective messages sent to the elderly person, risking frustrating the user or, worse, inducing them to assume incorrect and potentially harmful postures.
+The combined analysis of the metrics reveals a clear performance hierarchy. \textbf{MediaPipe Pose} emerges as the most performant model, achieving an average of 75.619 FPS with an inference latency of only 13.324 ms, a mean confidence of 94.7\%, and near-perfect body coverage (99.9\%). These figures position MediaPipe as the optimal choice for real-time feedback applications, comfortably exceeding the 30 FPS threshold required for fluid human-computer interaction. Its low latency ensures that corrective feedback can be delivered with minimal delay, which is essential for supporting the psychomotor learning stages outlined in Bloom's Taxonomy.
+
+\textbf{YOLO Pose} follows closely, with 50.206 FPS and 21.396 ms latency, also surpassing the real-time requirements. While its confidence (92.5\%) and coverage (97.3\%) are slightly lower than MediaPipe's, YOLO remains a highly viable option. The choice between MediaPipe and YOLO ultimately depends on deployment constraints: MediaPipe offers superior performance across all quantitative metrics, whereas YOLO may be preferred in scenarios requiring integration with other YOLO-based detection tasks (e.g., object detection for fall detection or environment monitoring).
+
+Conversely, both \textbf{OpenCV DNN Pose} and \textbf{OpenPose} exhibit prohibitive computational costs that render them unsuitable for domestic deployment. OpenCV DNN Pose achieves only 0.311 FPS with a latency of 3.2 seconds per frame, and a confidence score of just 69.6\%. OpenPose performs similarly poorly (0.301 FPS, 3.3 seconds latency), despite its theoretically robust architecture based on Part Affinity Fields (PAFs). These performance figures make instant feedback impossible, and the high latency would degrade the user experience to an unacceptable level, potentially causing frustration and disengagement in elderly users. Additionally, the low confidence observed in OpenCV DNN Pose (especially on complex poses) would lead to erroneous corrective messages, a scenario that is both clinically and ethically problematic.
+
+Based on these results, \textbf{MediaPipe Pose} is recommended as the primary algorithm for Active Ageing applications. Its superior FPS and confidence metrics ensure that the system can provide reliable, real-time feedback, which is critical for guiding older adults through the correct execution of Tai Chi movements. YOLO Pose remains a valid alternative, particularly in multi-task scenarios where a unified YOLO-based pipeline is already employed.
 
 \section{Source Code and Data Availability}
 The complete benchmarking source code, along with the experimental setup, is publicly available on GitHub at the following repository:
@@ -209,6 +217,7 @@ The repository contains all the necessary scripts to reproduce the experiments, 
 The proprietary dataset used for the stress-test, consisting of segmented Tai Chi video clips, as well as the pre-trained pose estimation models evaluated in this study, are available for download from the following Google Drive folder:
 
 \url{https://drive.google.com/drive/folders/1y_KmHY4XL35zGt673nxBT7Gg-XtN9qDT?usp=drive_link}
+
 \section{Declaration on the Use of Generative Artificial Intelligence Tools}
 In accordance with the policy established for Part II (Approach B) of the Human Motion Computing course, the author formally and transparently declares the use of the Large Language Model (specifically Claude) exclusively as an auxiliary tool for the following activities:
 \begin{enumerate}
