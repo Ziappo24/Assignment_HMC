@@ -199,13 +199,16 @@ The combined analysis of the metrics highlights how \textbf{YOLO Pose} represent
 
 Conversely, both \textbf{OpenCV DNN Pose} and the Bottom-Up architecture of \textbf{OpenPose} show insurmountable limitations for standalone domestic use. Although OpenPose theoretically maintains a robust architecture based on Part Affinity Fields (PAFs), it suffers from a prohibitive computational cost on CPU ($176.853$ ms latency and only $5.681$ FPS), degrading the user experience and making any instant feedback impossible. OpenCV DNN Pose, on the other hand, suffers from a dramatic loss of accuracy: the Mean Confidence Score plummets to $34.1\%$ with a systematic loss of limb joint tracking (Coverage Ratio of $80.7\%$). This qualitative degradation translates into a continuous flickering effect of the vectors (jittering), which would generate false positives in the corrective messages sent to the elderly person, risking frustrating the user or, worse, inducing them to assume incorrect and potentially harmful postures.
 
-\section{Source Code Availability}
-The complete benchmarking source code, along with the experimental setup and the full results dataset, is publicly available on GitHub at the following repository:
+\section{Source Code and Data Availability}
+The complete benchmarking source code, along with the experimental setup, is publicly available on GitHub at the following repository:
 
 \url{https://github.com/Ziappo24/Assignment_HMC}
 
 The repository contains all the necessary scripts to reproduce the experiments, including the wrapper implementations for each HPE algorithm, the benchmarking pipeline, and the visualization tools for the performance metrics.
 
+The proprietary dataset used for the stress-test, consisting of segmented Tai Chi video clips, as well as the pre-trained pose estimation models evaluated in this study, are available for download from the following Google Drive folder:
+
+\url{https://drive.google.com/drive/folders/1y_KmHY4XL35zGt673nxBT7Gg-XtN9qDT?usp=drive_link}
 \section{Declaration on the Use of Generative Artificial Intelligence Tools}
 In accordance with the policy established for Part II (Approach B) of the Human Motion Computing course, the author formally and transparently declares the use of the Large Language Model (specifically Claude) exclusively as an auxiliary tool for the following activities:
 \begin{enumerate}
