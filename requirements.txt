@@ -1,0 +1,60 @@
+# =============================================================================
+# requirements.txt — Assignment Human Motion Computing (Approach B)
+# Testato su: Windows 11, Python 3.12, venv "hmc_env", GPU NVIDIA RTX 2060
+# =============================================================================
+
+# --- Computer Vision core ---
+opencv-contrib-python==4.10.0.84   # NON usare opencv-python 5.x: ha rimosso il
+                                    # supporto ai modelli Caffe (readNetFromCaffe),
+                                    # necessario per l'algoritmo OpenCV DNN Pose.
+
+# --- MediaPipe Pose ---
+mediapipe==0.10.21                 # Usa la nuova Tasks API (PoseLandmarker).
+                                    # Il wrapper rileva automaticamente se è
+                                    # disponibile l'API legacy (mp.solutions.pose)
+                                    # o se serve la Tasks API; nessuna azione
+                                    # manuale richiesta.
+
+# --- YOLO Pose ---
+ultralytics==8.4.84                # Scarica automaticamente yolov8n-pose.pt
+                                    # al primo utilizzo.
+
+# --- OpenPose (modello reale via pytorch-openpose) ---
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+# Installazione con supporto CUDA (necessaria per GPU NVIDIA):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# NOTA: senza questo indice pip installa la build CPU-only, che fa fallire
+# torch.cuda.is_available(). Verificare sempre con:
+#   python -c "import torch; print(torch.cuda.is_available())"
+
+# Repository esterno pytorch-openpose (non su PyPI, va clonato separatamente):
+#   git clone https://github.com/Hzzone/pytorch-openpose
+# e i pesi body_pose_model.pth scaricati manualmente (link Dropbox/Drive nel
+# README del repo) in pytorch-openpose/model/body_pose_model.pth
+# Se il modello reale non è disponibile, lo script ricade automaticamente
+# su una simulazione deterministica documentata (nessun crash).
+
+# --- Elaborazione dati e visualizzazione ---
+numpy==1.26.4
+pandas==2.2.3
+matplotlib==3.9.2
+seaborn==0.13.2
+
+# --- Utility ---
+requests==2.32.3                   # download automatico del video di test
+
+# =============================================================================
+# Istruzioni di installazione rapide (Windows, PowerShell):
+#
+#   python -m venv hmc_env
+#   .\hmc_env\Scripts\Activate.ps1
+#   pip install --upgrade pip
+#   pip install -r requirements.txt
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+#
+# Verifica finale dell'ambiente:
+#   python -c "import cv2, mediapipe, torch; from ultralytics import YOLO; \
+#              print('OpenCV:', cv2.__version__); \
+#              print('CUDA disponibile:', torch.cuda.is_available())"
+# =============================================================================
